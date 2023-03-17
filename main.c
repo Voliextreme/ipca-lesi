@@ -7,9 +7,8 @@
 #include "./controllers/conta.c"
 #include "./controllers/aluguer.c"
 
-int menuPrincipal()
+void menuPrincipal()
 {
-	int op;
 	printf(" --- Menu ---\n");
 	printf("1 Meios\n");
 	printf("2 Gestores\n");
@@ -17,13 +16,10 @@ int menuPrincipal()
 	printf("4 Aluguer\n");
 	printf("0 Sair\n");
 	printf("Opcao:\n");
-	scanf("%d", &op);
-	return (op);
 }
 
-int menuMeios()
+void menuMeios()
 {
-	int op;
 	printf(" --- Menu Meios --- \n");
 	printf("1 Inserir Meio\n");
 	printf("2 Listar Meios\n");
@@ -31,13 +27,10 @@ int menuMeios()
 	printf("4 Ler Meios\n");
 	printf("0 Sair\n");
 	printf("Opcao:\n");
-	scanf("%d", &op);
-	return (op);
 }
 
-int menuGestores()
+void menuGestores()
 {
-	int op;
 	printf(" --- Menu Gestores --- \n");
 	printf("1 Inserir Gestor\n");
 	printf("2 Listar Users\n");
@@ -45,34 +38,26 @@ int menuGestores()
 	printf("4 Ler Users\n");
 	printf("0 Sair\n");
 	printf("Opcao:\n");
-	scanf("%d", &op);
-	return (op);
 }
 
-int menuClientes()
+void menuClientes()
 {
-	int op;
 	printf("\n --- Menu Cliente --- \n");
 	printf("1 Listar Meios\n");
 	printf("2 Alugar Meio\n");
 	printf("3 Devolver Meio\n");
-	printf("4 Alterar Informaçoes\n");
+	printf("4 Alterar Informacoes\n");
 	printf("0 Sair\n");
 	printf("Opcao:\n");
-	scanf("%d", &op);
-	return (op);
 }
 
-int menuLogin()
+void menuLogin()
 {
-	int login;
 	printf("Login\n");
 	printf("1 Iniciar Sessao\n");
 	printf("2 Registar \n");
 	printf("0 Sair\n");
 	printf("Opcao:\n");
-	scanf("%d", &login);
-	return (login);
 }
 
 int main()
@@ -82,13 +67,14 @@ int main()
 	Aluguer *alugueres = NULL;		 // Lista ligada vazia
 	User *userAtual = NULL;
 
-	int op, id, login, role, codigo;
+	int op= 0,opP= 0,opG= 0,opC= 0,opM= 0, id, login=0, role, codigo;
 	float bateria, autonomia, saldo, custo;
 	char tipo[50], nome[50], morada[100], nif[10], email[50], geoCodigo[20];
 
 	do
 	{
-		login = menuLogin();
+		menuLogin();
+		scanf("%d", &login);
 		switch (login)
 		{
 		case 1:
@@ -106,14 +92,16 @@ int main()
 				// Menu Gestor
 				do
 				{
-					op = menuPrincipal();
-					switch (op)
+					menuPrincipal();
+					scanf("%d", &opP);
+					switch (opP)
 					{
 					case 1:
 						do
 						{
-							op = menuGestores();
-							switch (op)
+							menuGestores();
+							scanf("%d", &opG);
+							switch (opG)
 							{
 							case 1:
 								printf("Id:\n");
@@ -150,13 +138,14 @@ int main()
 								users = readUsers();
 								break;
 							}
-						} while (op != 0);
+						} while (opG != 0);
 						break;
 					case 2:
 						do
 						{
-							op = menuMeios();
-							switch (op)
+							menuMeios();
+							scanf("%d", &opM);
+							switch (opM)
 							{
 							case 1:
 								printf("Codigo:\n");
@@ -190,7 +179,7 @@ int main()
 								meios = lerMeios();
 								break;
 							}
-						} while (op != 0);
+						} while (opM != 0);
 					case 3:
 						break;
 					}
@@ -199,10 +188,12 @@ int main()
 			if (userAtual->role == 2)
 			{
 				// Menu Cliente
+				meios = lerMeios();
 				do
 				{
-					op = menuClientes();
-					switch (op)
+					menuClientes();
+					scanf("%d", &opC);
+					switch (opC)
 					{
 					case 1:
 						listarMeios(meios);
@@ -240,9 +231,11 @@ int main()
 						saveUsers(users);
 						break;
 					}
-				} while (op != 0);
+				} while (opC != 0);
 			}
+			break;
 		case 2:
+			printf("Registar\n");
 			printf("Id:\n");
 			scanf("%d", &id);
 			scanf("%*c");
@@ -265,7 +258,6 @@ int main()
 			listUsers(users);
 			saveUsers(users);
 			break;
-
 		default:
 			break;
 		}

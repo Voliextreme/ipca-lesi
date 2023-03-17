@@ -38,7 +38,7 @@ Meio *lerMeios()
     {
         while (!feof(fp))
         {
-            fscanf(fp, "%d;%f;%f;%[^\n]s;%f;%[^\n]s;%\n", &cod, &bat, &aut, tipo, &custo, geoCodigo, &disponivel);
+            fscanf(fp, "%d;%f;%f;%s;%f;%s;%d\n", &cod, &bat, &aut, tipo, &custo, geoCodigo, &disponivel);
             aux = inserirMeio(aux, cod, tipo, bat, aut, custo, geoCodigo, disponivel);
         }
         fclose(fp);
