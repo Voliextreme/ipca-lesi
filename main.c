@@ -9,18 +9,16 @@
 
 void menuPrincipal()
 {
-	printf(" --- Menu ---\n");
-	printf("1 Meios\n");
-	printf("2 Gestores\n");
-	printf("3 Clientes\n");
-	printf("4 Aluguer\n");
+	printf("\n --- Menu ---\n");
+	printf("1 Gestores\n");
+	printf("2 Meios\n");
 	printf("0 Sair\n");
 	printf("Opcao:\n");
 }
 
 void menuMeios()
 {
-	printf(" --- Menu Meios --- \n");
+	printf("\n --- Menu Meios --- \n");
 	printf("1 Inserir Meio\n");
 	printf("2 Listar Meios\n");
 	printf("3 Remover Meio\n");
@@ -31,7 +29,7 @@ void menuMeios()
 
 void menuGestores()
 {
-	printf(" --- Menu Gestores --- \n");
+	printf("\n --- Menu Gestores --- \n");
 	printf("1 Inserir Gestor\n");
 	printf("2 Listar Users\n");
 	printf("3 Remover User\n");
@@ -53,7 +51,7 @@ void menuClientes()
 
 void menuLogin()
 {
-	printf("Login\n");
+	printf("\n --- Login --- \n");
 	printf("1 Iniciar Sessao\n");
 	printf("2 Registar \n");
 	printf("0 Sair\n");
@@ -180,10 +178,10 @@ int main()
 								break;
 							}
 						} while (opM != 0);
-					case 3:
 						break;
 					}
 				} while (op != 0);
+				break;
 			}
 			if (userAtual->role == 2)
 			{
@@ -253,7 +251,7 @@ int main()
 			getchar();
 			printf("Saldo:\n");
 			scanf("%f", &saldo);
-			role = 2;
+			role = 1;
 			users = createUser(users, id, nome, nif, morada, email, role, saldo);
 			listUsers(users);
 			saveUsers(users);

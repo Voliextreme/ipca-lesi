@@ -14,8 +14,8 @@ int guardarMeios(Meio *inicio)
         Meio *aux = inicio;
         while (aux != NULL)
         {
-            fprintf(fp, "%d;%f;%f;%s\n", aux->codigo, aux->bateria,
-                    aux->autonomia, aux->tipo);
+            fprintf(fp, "%d;%s;%f;%f;%s;%f;%s;%d\n", aux->codigo, aux->tipo, aux->bateria,
+                    aux->autonomia, aux->custo, aux->geoCodigo, aux->disponivel);
             aux = aux->seguinte;
         }
         fclose(fp);
@@ -28,8 +28,8 @@ int guardarMeios(Meio *inicio)
 Meio *lerMeios()
 {
     FILE *fp;
-    int cod;
-    float bat, aut, custo;
+    int codigo;
+    float bateria, autonomia, custo;
     char tipo[50], geoCodigo[50];
     bool disponivel;
     Meio *aux = NULL;
@@ -38,8 +38,8 @@ Meio *lerMeios()
     {
         while (!feof(fp))
         {
-            fscanf(fp, "%d;%f;%f;%s;%f;%s;%d\n", &cod, &bat, &aut, tipo, &custo, geoCodigo, &disponivel);
-            aux = inserirMeio(aux, cod, tipo, bat, aut, custo, geoCodigo, disponivel);
+            fscanf(fp, "%d;%s;%f;%f;%s;%f;%s;%d\n", &codigo, tipo, &bateria, &autonomia, &custo, geoCodigo, &disponivel);
+            aux = inserirMeio(aux, codigo, tipo, bateria, autonomia, custo, geoCodigo, disponivel);
         }
         fclose(fp);
     }

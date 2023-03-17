@@ -67,7 +67,7 @@ User *createUser(User *inicio, int id, char nome[], char nif[], char morada[], c
       strcpy(novo->nif, nif);
       strcpy(novo->morada, morada);
       strcpy(novo->email, email);
-      novo->role = 2;
+      novo->role = role;
       novo->saldo = saldo;
       novo->seguinte = inicio;
       return (novo);
@@ -137,7 +137,6 @@ User* loginUser(User *inicio, char email[])
 {
   while (inicio != NULL)
   {
-    printf("email : %s", inicio->email);
     if (strcmp(inicio->email, email) == 0)
      {
       return (inicio);
