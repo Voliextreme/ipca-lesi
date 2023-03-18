@@ -9,7 +9,7 @@ typedef struct registo
  float bateria;
  float autonomia;
  float custo;
- char geoCodigo[20];
+ char geoCodigo[50];
  bool disponivel;
  struct registo* seguinte;
 } Meio;

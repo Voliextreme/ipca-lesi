@@ -41,10 +41,9 @@ void menuGestores()
 void menuClientes()
 {
 	printf("\n --- Menu Cliente --- \n");
-	printf("1 Listar Meios\n");
-	printf("2 Alugar Meio\n");
-	printf("3 Devolver Meio\n");
-	printf("4 Alterar Informacoes\n");
+	printf("1 Alugar Meio\n");
+	printf("2 Devolver Meio\n");
+	printf("3 Alterar Informacoes\n");
 	printf("0 Sair\n");
 	printf("Opcao:\n");
 }
@@ -60,14 +59,15 @@ void menuLogin()
 
 int main()
 {
-	Meio *meios = NULL;		 // Lista ligada vazia
-	User *users = NULL;		 // Lista ligada vazia
-	Aluguer *alugueres = NULL;		 // Lista ligada vazia
+	Meio *meios = NULL;		   // Lista ligada vazia
+	User *users = NULL;		   // Lista ligada vazia
+	Aluguer *alugueres = NULL; // Lista ligada vazia
 	User *userAtual = NULL;
 
-	int op= 0,opP= 0,opG= 0,opC= 0,opM= 0, id, login=0, role, codigo;
+	int op = 0, opP = 0, opG = 0, opC = 0, opM = 0, id, login = 0, role, codigo;
 	float bateria, autonomia, saldo, custo;
-	char tipo[50], nome[50], morada[100], nif[10], email[50], geoCodigo[20];
+	char tipo[50], nome[50], morada[100], nif[10], email[50], geoCodigo[50];
+	bool disponivel;
 
 	do
 	{
@@ -78,7 +78,7 @@ int main()
 		case 1:
 			users = readUsers();
 			printf("Email:");
-			scanf("%s",email);
+			scanf("%s", email);
 			userAtual = loginUser(users, email);
 			if (userAtual->role == 0)
 			{
@@ -158,10 +158,12 @@ int main()
 								scanf("%f", &autonomia);
 								printf("Custo:\n");
 								scanf("%f", &custo);
+								scanf("%*c");
 								printf("GeoCodigo:\n");
 								scanf("%[^\n]s", geoCodigo);
 								getchar();
-								meios = inserirMeio(meios, codigo, tipo, bateria, autonomia, custo, geoCodigo, false);
+								disponivel = true;
+								meios = inserirMeio(meios, codigo, tipo, bateria, autonomia, custo, geoCodigo, disponivel);
 								guardarMeios(meios);
 								break;
 							case 2:
@@ -176,10 +178,15 @@ int main()
 							case 4:
 								meios = lerMeios();
 								break;
+							default:
+								break;
 							}
 						} while (opM != 0);
 						break;
+					default:
+						break;
 					}
+
 				} while (op != 0);
 				break;
 			}
@@ -189,24 +196,24 @@ int main()
 				meios = lerMeios();
 				do
 				{
+					alugueres = lerAlugueres();
 					menuClientes();
 					scanf("%d", &opC);
 					switch (opC)
 					{
 					case 1:
 						listarMeios(meios);
-						break;
-					case 2:
 						printf("Codigo do meio de mobilidade a alugar?\n");
 						scanf("%d", &codigo);
 						alugueres = alugarMeio(alugueres, meios, codigo, userAtual->id, users);
 						break;
-					case 3:
+					case 2:
+						listarAlugueres(alugueres);
 						printf("Codigo do meio de mobilidade a devolver?\n");
 						scanf("%d", &codigo);
 						alugueres = devolverMeio(meios, codigo, userAtual->id);
 						break;
-					case 4:
+					case 3:
 						printf("Id:\n");
 						scanf("%d", &id);
 						scanf("%*c");
@@ -233,6 +240,7 @@ int main()
 			}
 			break;
 		case 2:
+			users = readUsers();
 			printf("Registar\n");
 			printf("Id:\n");
 			scanf("%d", &id);
@@ -251,7 +259,7 @@ int main()
 			getchar();
 			printf("Saldo:\n");
 			scanf("%f", &saldo);
-			role = 1;
+			role = 2;
 			users = createUser(users, id, nome, nif, morada, email, role, saldo);
 			listUsers(users);
 			saveUsers(users);
@@ -262,135 +270,5 @@ int main()
 
 	} while (login != 0);
 
-	/*
-	do
-	{
-		op = menuPrincipal();
-		switch (op)
-		{
-		case 1:
-			// ------------------- MEIOS ------------------
-			do
-			{
-				opM = menuMeios();
-				switch (opM)
-				{
-				case 1:
-					printf("Codigo?\n");
-					scanf("%d", &cod);
-					scanf("%*c");
-					printf("Tipo\n");
-					scanf("%[^\n]s", tipo);
-					printf("Nivel da bateria?\n");
-					scanf("%f", &bat);
-					printf("Autonomia\n");
-					scanf("%f", &aut);
-					meios = inserirMeio(meios, cod, tipo, bat, aut);
-					break;
-				case 2:
-					listarMeios(meios);
-					break;
-				case 3:
-					printf("Codigo do meio de mobilidade a remover?\n");
-					scanf("%d", &cod);
-					meios = removerMeio(meios, cod);
-					break;
-				case 4:
-					guardarMeios(meios);
-					break;
-				case 5:
-					meios = lerMeios();
-					break;
-				}
-			} while (opM != 0);
-			break;
-		case 2:
-			// ------------------- Gestores ------------------
-			do
-			{
-				opG = menuGestores();
-				switch (opG)
-				{
-				case 1:
-
-					printf("Id:\n");
-					scanf("%d", &id);
-					scanf("%*c");
-					printf("Nome:\n");
-					scanf("%[^\n]s", nome);
-					getchar();
-					printf("NIF:\n");
-					scanf("%[^\n]s", nif);
-					getchar();
-					printf("Morada:\n");
-					scanf("%[^\n]s", morada);
-					getchar();
-					printf("Saldo:\n");
-					scanf("%f", &saldo);
-					gestores = inserirGestor(gestores, id, nome, nif, morada, saldo);
-					break;
-				case 2:
-					listarGestores(gestores);
-					break;
-				case 3:
-					printf("Id do gestor a remover?\n");
-					scanf("%d", &id);
-					gestores = removerGestor(gestores, id);
-					break;
-				case 4:
-					guardarGestores(gestores);
-					break;
-				case 5:
-					gestores = lerGestores();
-					break;
-				}
-			} while (opG != 0);
-			break;
-		case 3:
-			// ------------------- Clientes ------------------
-			do
-			{
-				opC = menuClientes();
-				switch (opC)
-				{
-				case 1:
-
-					printf("Id:\n");
-					scanf("%d", &id);
-					scanf("%*c");
-					printf("Nome:\n");
-					scanf("%[^\n]s", nome);
-					getchar();
-					printf("NIF:\n");
-					scanf("%[^\n]s", nif);
-					getchar();
-					printf("Morada:\n");
-					scanf("%[^\n]s", morada);
-					getchar();
-					printf("Saldo:\n");
-					scanf("%f", &saldo);
-					clientes = inserirCliente(clientes, id, nome, nif, morada, saldo);
-					break;
-				case 2:
-					listarClientes(clientes);
-					break;
-				case 3:
-					printf("Id do cliente a remover?\n");
-					scanf("%d", &id);
-					clientes = removerCliente(clientes, id);
-					break;
-				case 4:
-					guardarClientes(clientes);
-					break;
-				case 5:
-					clientes = lerClientes();
-					break;
-				}
-			} while (opC != 0);
-			break;
-		}
-
-	} while (op != 0);
-	*/
 	return (0);
 }
