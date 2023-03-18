@@ -39,6 +39,8 @@ User *readUsers()
       aux = createUser(aux, id, nome, nif, morada, email, role, saldo);
     }
     fclose(fp);
+  }else{
+        printf("Erro ao abrir o ficheiro");
   }
   return (aux);
 }

@@ -12,7 +12,6 @@ Aluguer *alugarMeio(Aluguer *inicio, Meio *inicioMeio, int codigoMeio, int idCli
     int cod = 1;
     bool meioDisponivel;
     bool meioExiste = existeMeio(inicioMeio, codigoMeio);
-    printf("%d", meioExiste);
 
     if (!meioExiste)
     {
@@ -21,7 +20,7 @@ Aluguer *alugarMeio(Aluguer *inicio, Meio *inicioMeio, int codigoMeio, int idCli
     else
     {
         meioDisponivel = disponibilidadeMeio(inicioMeio, codigoMeio);
-        if (meioDisponivel && existeAluguer(inicio, cod))
+        if (meioDisponivel && !existeAluguer(inicio, cod))
         {
             Aluguer *novo = malloc(sizeof(struct aluga));
             if (novo != NULL)
@@ -62,16 +61,26 @@ int existeAluguer(Aluguer *inicio, int idAluguer)
     return (0);
 }
 
-Aluguer *devolverMeio(Meio *inicio, int codigoMeio, int idCliente)
+int devolverMeio(Meio *inicio, int codigoMeio, int idCliente)
 {
-    return (NULL);
+    while (inicio != NULL)
+    {
+        if (inicio->codigo == codigoMeio && inicio->disponivel == false)
+        {
+            inicio->disponivel = true;
+            return (1);
+        }
+        inicio = inicio->seguinte;
+    }
+    return (0);
 }
 
 void listarAlugueres(Aluguer *inicio)
 {
+    printf("ID Aluguer; ID Meio; ID Cliente\n");
     while (inicio != NULL)
     {
-        printf("%d %d %d\n", inicio->idAluguer, inicio->idMeio, inicio->idCliente);
+        printf("%d  %d  %d\n", inicio->idAluguer, inicio->idMeio, inicio->idCliente);
         inicio = inicio->seguinte;
     }
 }
@@ -90,6 +99,8 @@ Aluguer *lerAlugueres()
             aux = alugarMeioFicheiro(aux, idAluguer, idMeio, idCliente);
         }
         fclose(fp);
+    }else{
+        printf("Erro ao abrir o ficheiro");
     }
     return (aux);
 }
@@ -108,5 +119,24 @@ Aluguer *alugarMeioFicheiro(Aluguer *inicio, int idAluguer, int codigoMeio, int 
             return (novo);
         }
     }
+}
+
+int guardarAlugueres(Aluguer *inicio)
+{
+    FILE *fp;
+    fp = fopen("alugueres.txt", "w");
+    if (fp != NULL)
+    {
+        Aluguer *aux = inicio;
+        while (aux != NULL)
+        {
+            fprintf(fp, "%d;%d;%d\n", aux->idAluguer, aux->idMeio, aux->idCliente);
+            aux = aux->seguinte;
+        }
+        fclose(fp);
+        return (1);
+    }
+    else
+        return (0);
 }
 

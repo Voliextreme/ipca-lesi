@@ -206,12 +206,13 @@ int main()
 						printf("Codigo do meio de mobilidade a alugar?\n");
 						scanf("%d", &codigo);
 						alugueres = alugarMeio(alugueres, meios, codigo, userAtual->id, users);
+						guardarAlugueres(alugueres);
 						break;
 					case 2:
 						listarAlugueres(alugueres);
 						printf("Codigo do meio de mobilidade a devolver?\n");
 						scanf("%d", &codigo);
-						alugueres = devolverMeio(meios, codigo, userAtual->id);
+						devolverMeio(meios, codigo, userAtual->id);
 						break;
 					case 3:
 						printf("Id:\n");

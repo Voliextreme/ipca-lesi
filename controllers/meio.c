@@ -42,6 +42,8 @@ Meio *lerMeios()
             aux = inserirMeio(aux, codigo, tipo, bateria, autonomia, custo, geoCodigo, disponivel);
         }
         fclose(fp);
+    }else{
+        printf("Erro ao abrir o ficheiro");
     }
     return (aux);
 }
