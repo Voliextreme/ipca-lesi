@@ -4,7 +4,6 @@
 
 #include "meio.h"
 
-
 int guardarMeios(Meio *inicio)
 {
     FILE *fp;
@@ -21,8 +20,25 @@ int guardarMeios(Meio *inicio)
         fclose(fp);
         return (1);
     }
-    else
-        return (0);
+    return (0);
+}
+
+int guardarMeiosBin(Meio *inicio)
+{
+    FILE *fp;
+    fp = fopen("meios.bin", "wb");
+    if (fp != NULL)
+    {
+        Meio *aux = inicio;
+        while (aux != NULL)
+        {
+            fwrite(aux, sizeof(Meio), 1, fp);
+            aux = aux->seguinte;
+        }
+        fclose(fp);
+        return (1);
+    }
+    return (0);
 }
 
 Meio *lerMeios()
@@ -42,7 +58,9 @@ Meio *lerMeios()
             aux = inserirMeio(aux, codigo, tipo, bateria, autonomia, custo, geoCodigo, disponivel);
         }
         fclose(fp);
-    }else{
+    }
+    else
+    {
         printf("Erro ao abrir o ficheiro");
     }
     return (aux);
@@ -122,5 +140,64 @@ Meio *removerMeio(Meio *inicio, int cod)
             free(atual);
             return (inicio);
         }
+    }
+}
+
+void listMeiosPorAutonomiaDecrescente(Meio **inicio)
+{
+    Meio *copia_inicio = NULL;
+    Meio *atual = *inicio;
+
+    while (atual != NULL)
+    {
+        Meio *novoMeio = malloc(sizeof(Meio));
+        *novoMeio = *atual;
+        novoMeio->seguinte = NULL;
+        if (copia_inicio == NULL)
+        {
+            copia_inicio = novoMeio;
+        }
+        else
+        {
+            Meio *atual_copia = copia_inicio;
+            while (atual_copia->seguinte != NULL)
+            {
+                atual_copia = atual_copia->seguinte;
+            }
+            atual_copia->seguinte = novoMeio;
+        }
+        atual = atual->seguinte;
+    }
+
+    Meio *meiosOrganizados = NULL;
+    while (copia_inicio != NULL)
+    {
+        Meio *seguinte = copia_inicio->seguinte;
+        Meio *novo_atual = meiosOrganizados;
+
+        if (meiosOrganizados == NULL || meiosOrganizados->autonomia <= copia_inicio->autonomia)
+        {
+            copia_inicio->seguinte = meiosOrganizados;
+            meiosOrganizados = copia_inicio;
+        }
+        else
+        {
+            while (novo_atual->seguinte != NULL && novo_atual->seguinte->autonomia > copia_inicio->autonomia)
+            {
+                novo_atual = novo_atual->seguinte;
+            }
+            copia_inicio->seguinte = novo_atual->seguinte;
+            novo_atual->seguinte = copia_inicio;
+        }
+        copia_inicio = seguinte;
+    }
+
+    listarMeios(meiosOrganizados);
+
+    while (meiosOrganizados != NULL)
+    {
+        Meio *seguinte = meiosOrganizados->seguinte;
+        free(meiosOrganizados);
+        meiosOrganizados = meiosOrganizados->seguinte;
     }
 }

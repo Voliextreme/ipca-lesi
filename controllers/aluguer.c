@@ -7,9 +7,9 @@
 #include "conta.h"
 #include "meio.h"
 
+int cod = 1;
 Aluguer *alugarMeio(Aluguer *inicio, Meio *inicioMeio, int codigoMeio, int idCliente, User *inicioUser)
 {
-    int cod = 1;
     bool meioDisponivel;
     bool meioExiste = existeMeio(inicioMeio, codigoMeio);
 
@@ -20,16 +20,20 @@ Aluguer *alugarMeio(Aluguer *inicio, Meio *inicioMeio, int codigoMeio, int idCli
     else
     {
         meioDisponivel = disponibilidadeMeio(inicioMeio, codigoMeio);
-        if (meioDisponivel && !existeAluguer(inicio, cod))
+        while (inicio != NULL)
         {
-            Aluguer *novo = malloc(sizeof(struct aluga));
-            if (novo != NULL)
+            if (meioDisponivel && !existeAluguer(inicio, cod))
             {
-                novo->idAluguer = cod;
-                novo->idMeio = codigoMeio;
-                novo->idCliente = idCliente;
-                novo->seguinte = inicio;
-                return (novo);
+                Aluguer *novo = (struct aluga *)malloc(sizeof(struct aluga));
+                if (novo != NULL)
+                {
+                    novo->idAluguer = cod;
+                    novo->idMeio = codigoMeio;
+                    novo->idCliente = idCliente;
+                    novo->seguinte = inicio;
+                    setMeioAlugado(&inicioMeio, codigoMeio);
+                    return (novo);
+                }
             }
             else
             {
@@ -37,6 +41,7 @@ Aluguer *alugarMeio(Aluguer *inicio, Meio *inicioMeio, int codigoMeio, int idCli
             }
         }
     }
+    return (inicio);
 }
 
 int disponibilidadeMeio(Meio *inicio, int cod)
@@ -46,6 +51,21 @@ int disponibilidadeMeio(Meio *inicio, int cod)
         if (inicio->codigo == cod && inicio->disponivel == true)
             return (1);
         inicio = inicio->seguinte;
+    }
+    return (0);
+}
+
+int setMeioAlugado(Meio **inicio, int cod)
+{
+    while (*inicio != NULL)
+    {
+        if ((*inicio)->codigo == cod)
+        {
+            (*inicio)->disponivel = true ;
+            *inicio = (*inicio)->seguinte;
+            return (1);
+        }
+        inicio = &(*inicio)->seguinte;
     }
     return (0);
 }
@@ -77,10 +97,10 @@ int devolverMeio(Meio *inicio, int codigoMeio, int idCliente)
 
 void listarAlugueres(Aluguer *inicio)
 {
-    printf("ID Aluguer; ID Meio; ID Cliente\n");
+    printf("\nID Aluguer ID Meio ID Cliente\n");
     while (inicio != NULL)
     {
-        printf("%d  %d  %d\n", inicio->idAluguer, inicio->idMeio, inicio->idCliente);
+        printf("Aluguer:%d  Meio:%d  Cliente:%d\n", inicio->idAluguer, inicio->idMeio, inicio->idCliente);
         inicio = inicio->seguinte;
     }
 }
@@ -99,7 +119,9 @@ Aluguer *lerAlugueres()
             aux = alugarMeioFicheiro(aux, idAluguer, idMeio, idCliente);
         }
         fclose(fp);
-    }else{
+    }
+    else
+    {
         printf("Erro ao abrir o ficheiro");
     }
     return (aux);
@@ -139,4 +161,3 @@ int guardarAlugueres(Aluguer *inicio)
     else
         return (0);
 }
-

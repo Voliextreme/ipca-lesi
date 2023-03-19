@@ -1,3 +1,4 @@
-1984553328;ucas;23190;dasj;lucas;2;312.00
-1;tiago;100;braga;tiago;1;1.00
+4;joao;120;2130;joao;2;3012.00
 2;ze;1203;fds;ze;2;123.00
+1;tiago;100;braga;tiago;1;1.00
+1984553328;ucas;23190;dasj;lucas;2;312.00

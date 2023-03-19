@@ -20,6 +20,8 @@ Aluguer* lerAlugueres();
 
 int existeAluguer(Aluguer* inicio, int idAluguer);
 
+int setMeioAlugado(Meio **inicio, int cod);
+
 int disponibilidadeMeio(Meio* inicio, int codigoMeio);
 void listarAlugueres(Aluguer* inicio);
 int guardarAlugueres(Aluguer* inicio);

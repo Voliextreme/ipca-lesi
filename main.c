@@ -23,6 +23,8 @@ void menuMeios()
 	printf("2 Listar Meios\n");
 	printf("3 Remover Meio\n");
 	printf("4 Ler Meios\n");
+	printf("5 Alterar Meio\n");
+	printf("6 Listar meios por ordem decrescente de autonomia\n");
 	printf("0 Sair\n");
 	printf("Opcao:\n");
 }
@@ -178,6 +180,16 @@ int main()
 							case 4:
 								meios = lerMeios();
 								break;
+							case 5:
+								/*listarMeios(meios);
+								printf("Codigo do meio de mobilidade a alterar?\n");
+								scanf("%d", &codigo);
+								meios = alterarMeio(meios, codigo);
+								guardarMeios(meios);*/
+								break;
+							case 6:
+								listMeiosPorAutonomiaDecrescente(&meios);
+								break;
 							default:
 								break;
 							}
@@ -205,14 +217,17 @@ int main()
 						listarMeios(meios);
 						printf("Codigo do meio de mobilidade a alugar?\n");
 						scanf("%d", &codigo);
-						alugueres = alugarMeio(alugueres, meios, codigo, userAtual->id, users);
+						alugueres=alugarMeio(alugueres, meios, codigo, userAtual->id, users);
+						listarAlugueres(alugueres);
 						guardarAlugueres(alugueres);
 						break;
 					case 2:
-						listarAlugueres(alugueres);
+						/*listarAlugueres(alugueres);
 						printf("Codigo do meio de mobilidade a devolver?\n");
 						scanf("%d", &codigo);
 						devolverMeio(meios, codigo, userAtual->id);
+						guardarAlugueres(alugueres);*/
+						printf("Em desenvolvimento...");
 						break;
 					case 3:
 						printf("Id:\n");
