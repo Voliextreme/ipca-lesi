@@ -36,6 +36,7 @@ void menuGestores()
 	printf("2 Listar Users\n");
 	printf("3 Remover User\n");
 	printf("4 Ler Users\n");
+	printf("5 Alterar Users\n");
 	printf("0 Sair\n");
 	printf("Opcao:\n");
 }
@@ -46,6 +47,7 @@ void menuClientes()
 	printf("1 Alugar Meio\n");
 	printf("2 Devolver Meio\n");
 	printf("3 Alterar Informacoes\n");
+	
 	printf("0 Sair\n");
 	printf("Opcao:\n");
 }
@@ -137,6 +139,12 @@ int main()
 							case 4:
 								users = readUsers();
 								break;
+							case 5: 
+								listUsers(users);
+								printf("Id do user a alterar?\n");
+								scanf("%d", &id);
+								alterarUser(&users, id);
+								saveUsers(users);
 							}
 						} while (opG != 0);
 						break;
@@ -172,20 +180,20 @@ int main()
 								listarMeios(meios);
 								break;
 							case 3:
-								printf("Id do meio a remover?\n");
-								scanf("%d", &id);
-								meios = removerMeio(meios, id);
+								printf("Codigo do meio a remover?\n");
+								scanf("%d", &cod);
+								meios = removerMeio(meios, cod);
 								guardarMeios(meios);
 								break;
 							case 4:
 								meios = lerMeios();
 								break;
 							case 5:
-								/*listarMeios(meios);
+								listarMeios(meios);
 								printf("Codigo do meio de mobilidade a alterar?\n");
 								scanf("%d", &codigo);
-								meios = alterarMeio(meios, codigo);
-								guardarMeios(meios);*/
+								alterarMeio(&meios, codigo);
+								guardarMeios(meios);
 								break;
 							case 6:
 								listMeiosPorAutonomiaDecrescente(&meios);

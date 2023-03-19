@@ -99,6 +99,20 @@ void listarMeios(Meio *inicio)
     }
 }
 
+
+void listarMeiosOrganizados(Meio **inicio)
+{
+    Meio *aux = *inicio;
+    while (aux != NULL)
+    {
+        printf("%d %s %f %f %f %s %d\n", aux->codigo, aux->tipo,
+               aux->bateria, aux->autonomia, aux->custo, aux->geoCodigo, aux->disponivel);
+        *inicio = aux->seguinte;
+        aux = aux->seguinte;
+    }
+}
+
+
 // Determinar existência do 'codigo' na lista ligada 'inicio'
 // devolve 1 se existir ou 0 caso contrário
 int existeMeio(Meio *inicio, int cod)
@@ -143,6 +157,7 @@ Meio *removerMeio(Meio *inicio, int cod)
     }
 }
 
+
 void listMeiosPorAutonomiaDecrescente(Meio **inicio)
 {
     Meio *copia_inicio = NULL;
@@ -150,6 +165,7 @@ void listMeiosPorAutonomiaDecrescente(Meio **inicio)
 
     while (atual != NULL)
     {
+        printf("cheguei aquiAtual");
         Meio *novoMeio = malloc(sizeof(Meio));
         *novoMeio = *atual;
         novoMeio->seguinte = NULL;
@@ -163,6 +179,7 @@ void listMeiosPorAutonomiaDecrescente(Meio **inicio)
             while (atual_copia->seguinte != NULL)
             {
                 atual_copia = atual_copia->seguinte;
+        printf("cheguei aqui");
             }
             atual_copia->seguinte = novoMeio;
         }
@@ -179,12 +196,14 @@ void listMeiosPorAutonomiaDecrescente(Meio **inicio)
         {
             copia_inicio->seguinte = meiosOrganizados;
             meiosOrganizados = copia_inicio;
+        printf("cheguei aqui2");
         }
         else
         {
             while (novo_atual->seguinte != NULL && novo_atual->seguinte->autonomia > copia_inicio->autonomia)
             {
                 novo_atual = novo_atual->seguinte;
+        printf("cheguei aqui3");
             }
             copia_inicio->seguinte = novo_atual->seguinte;
             novo_atual->seguinte = copia_inicio;
@@ -192,7 +211,7 @@ void listMeiosPorAutonomiaDecrescente(Meio **inicio)
         copia_inicio = seguinte;
     }
 
-    listarMeios(meiosOrganizados);
+    listarMeiosOrganizados(&meiosOrganizados);
 
     while (meiosOrganizados != NULL)
     {
@@ -200,4 +219,35 @@ void listMeiosPorAutonomiaDecrescente(Meio **inicio)
         free(meiosOrganizados);
         meiosOrganizados = meiosOrganizados->seguinte;
     }
+}
+
+void alterarMeio(Meio **inicio, int codigo)
+{
+    Meio *aux = *inicio;
+    while (aux != NULL)
+    {
+        if (aux->codigo == codigo)
+        {
+            // Prompt user for new values
+            printf("Digite o novo tipo: ");
+            scanf("%s", aux->tipo);
+
+            printf("Digite a nova capacidade da bateria: ");
+            scanf("%f", &aux->bateria);
+
+            printf("Digite a nova autonomia: ");
+            scanf("%f", &aux->autonomia);
+
+            printf("Digite o novo custo: ");
+            scanf("%f", &aux->custo);
+
+            printf("Digite o novo código geográfico: ");
+            scanf("%s", aux->geoCodigo);
+
+            printf("Meio atualizado com sucesso.\n");
+            return;
+        }
+        aux = aux->seguinte;
+    }
+    printf("Meio não encontrado.\n");
 }

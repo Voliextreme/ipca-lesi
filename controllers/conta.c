@@ -148,3 +148,32 @@ User* loginUser(User *inicio, char email[])
     return 0;
 }
 
+
+
+void alterarUser(User **inicio, int id)
+{
+    User *aux = *inicio;
+    while (aux != NULL)
+    {
+        if (aux->id == id)
+        {
+            // Prompt user for new values
+            printf("Digite o nome: ");
+            scanf("%s", aux->nome);
+
+            printf("Digite o nif: ");
+            scanf("%s", aux->nif);
+
+            printf("Digite a morada: ");
+            scanf("%s", aux->morada);
+
+            printf("Digite o role: [1-Gestor, 2-User]]");
+            scanf("%d", &aux->role);
+
+            printf("User atualizado com sucesso.\n");
+            return;
+        }
+        aux = aux->seguinte;
+    }
+    printf("User não encontrado.\n");
+}

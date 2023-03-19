@@ -20,6 +20,9 @@ void listUsers(User* inicio); // listar na consola o conteúdo da lista ligada
 int findUser(User* inicio, int id); // Determinar existência do 'codigo' na lista ligada 'inicio'
 User* removeUser(User* inicio, int id); // Remover um User a partir do seu código
 
+
+void alterarUser(User** inicio, int id);
+
 int saveUsers(User* inicio);
 User* readUsers();
 
