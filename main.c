@@ -186,8 +186,8 @@ int main()
 								break;
 							case 3:
 								printf("Codigo do meio a remover?\n");
-								scanf("%d", &cod);
-								meios = removerMeio(meios, cod);
+								scanf("%d", &codigo);
+								meios = removerMeio(meios, codigo);
 								guardarMeios(meios);
 								guardarMeiosBin(meios);
 								break;
