@@ -10,12 +10,12 @@ typedef struct registo
  float autonomia;
  float custo;
  char geoCodigo[50];
- bool disponivel;
+ int disponivel;
  struct registo* seguinte;
 } Meio;
 
 
-Meio* inserirMeio(Meio* inicio, int codigo, char tipo[], float bateria, float autonomia, float custo, char geoCodigo[], bool disponivel); // Inserção de um novo registo
+Meio* inserirMeio(Meio* inicio, int codigo, char tipo[], float bateria, float autonomia, float custo, char geoCodigo[], int disponivel); // Inserção de um novo registo
 Meio* removerMeio(Meio* inicio, int cod); // Remover um meio a partir do seu código
 int existeMeio(Meio* inicio, int codigo); // Determinar existência do 'codigo' na lista ligada 'inicio'
 
@@ -26,6 +26,7 @@ int guardarMeiosBin(Meio* inicio);
 void listarMeios(Meio* inicio); // listar na consola o conteúdo da lista ligada
 void listarMeiosOrganizados(Meio** inicio);
 void listMeiosPorAutonomiaDecrescente(Meio** inicio);
+void listarMeiosPorGeocodigo(Meio *inicio, char *geoCodigo);
 
 int guardarMeios(Meio* inicio);
 Meio* lerMeios();

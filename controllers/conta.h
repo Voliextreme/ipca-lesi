@@ -22,8 +22,10 @@ User* removeUser(User* inicio, int id); // Remover um User a partir do seu códi
 
 
 void alterarUser(User** inicio, int id);
+void alterarUserCliente(User** inicio, int id);
 
 int saveUsers(User* inicio);
+int saveUsersBin(User* inicio);
 User* readUsers();
 
 User* loginUser(User* inicio, char email[]);

@@ -25,6 +25,7 @@ void menuMeios()
 	printf("4 Ler Meios\n");
 	printf("5 Alterar Meio\n");
 	printf("6 Listar meios por ordem decrescente de autonomia\n");
+	printf("7 Listar meios por Geocodigo\n");
 	printf("0 Sair\n");
 	printf("Opcao:\n");
 }
@@ -47,7 +48,7 @@ void menuClientes()
 	printf("1 Alugar Meio\n");
 	printf("2 Devolver Meio\n");
 	printf("3 Alterar Informacoes\n");
-	
+
 	printf("0 Sair\n");
 	printf("Opcao:\n");
 }
@@ -126,6 +127,7 @@ int main()
 								role = 1;
 								users = createUser(users, id, nome, nif, morada, email, role, saldo);
 								saveUsers(users);
+								saveUsersBin(users);
 								break;
 							case 2:
 								listUsers(users);
@@ -135,16 +137,18 @@ int main()
 								scanf("%d", &id);
 								users = removeUser(users, id);
 								saveUsers(users);
+								saveUsersBin(users);
 								break;
 							case 4:
 								users = readUsers();
 								break;
-							case 5: 
+							case 5:
 								listUsers(users);
 								printf("Id do user a alterar?\n");
 								scanf("%d", &id);
 								alterarUser(&users, id);
 								saveUsers(users);
+								saveUsersBin(users);
 							}
 						} while (opG != 0);
 						break;
@@ -175,6 +179,7 @@ int main()
 								disponivel = true;
 								meios = inserirMeio(meios, codigo, tipo, bateria, autonomia, custo, geoCodigo, disponivel);
 								guardarMeios(meios);
+								guardarMeiosBin(meios);
 								break;
 							case 2:
 								listarMeios(meios);
@@ -184,6 +189,7 @@ int main()
 								scanf("%d", &cod);
 								meios = removerMeio(meios, cod);
 								guardarMeios(meios);
+								guardarMeiosBin(meios);
 								break;
 							case 4:
 								meios = lerMeios();
@@ -194,9 +200,15 @@ int main()
 								scanf("%d", &codigo);
 								alterarMeio(&meios, codigo);
 								guardarMeios(meios);
+								guardarMeiosBin(meios);
 								break;
 							case 6:
 								listMeiosPorAutonomiaDecrescente(&meios);
+								break;
+							case 7:
+								printf("GeoCodigo?\n");
+								scanf("%s", geoCodigo);
+								listarMeiosPorGeocodigo(meios, geoCodigo);
 								break;
 							default:
 								break;
@@ -225,7 +237,7 @@ int main()
 						listarMeios(meios);
 						printf("Codigo do meio de mobilidade a alugar?\n");
 						scanf("%d", &codigo);
-						alugueres=alugarMeio(alugueres, meios, codigo, userAtual->id, users);
+						alugueres = alugarMeio(alugueres, meios, codigo, userAtual->id, users);
 						listarAlugueres(alugueres);
 						guardarAlugueres(alugueres);
 						break;
@@ -238,26 +250,10 @@ int main()
 						printf("Em desenvolvimento...");
 						break;
 					case 3:
-						printf("Id:\n");
-						scanf("%d", &id);
-						scanf("%*c");
-						printf("Nome:\n");
-						scanf("%s", nome);
-						getchar();
-						printf("NIF:\n");
-						scanf("%s", nif);
-						getchar();
-						printf("Morada:\n");
-						scanf("%s", morada);
-						getchar();
-						printf("Email:\n");
-						scanf("%s", email);
-						getchar();
-						printf("Saldo:\n");
-						scanf("%f", &saldo);
-						role = 2;
-						// users = alterarUser(users, id, nome, nif, morada, email, role, saldo);
+						users=readUsers();
+						alterarUserCliente(&users, userAtual->id);
 						saveUsers(users);
+						saveUsersBin(users);
 						break;
 					}
 				} while (opC != 0);

@@ -1,6 +1,5 @@
 #include <stdlib.h>
 #include <string.h>
-#include <stdbool.h>
 
 #include "meio.h"
 
@@ -26,7 +25,7 @@ int guardarMeios(Meio *inicio)
 int guardarMeiosBin(Meio *inicio)
 {
     FILE *fp;
-    fp = fopen("meios.bin", "wb");
+    fp = fopen("./FicheirosBin/meios.bin", "wb");
     if (fp != NULL)
     {
         Meio *aux = inicio;
@@ -47,27 +46,27 @@ Meio *lerMeios()
     int codigo;
     float bateria, autonomia, custo;
     char tipo[50], geoCodigo[50];
-    bool disponivel;
+    int disponivel;
     Meio *aux = NULL;
+    
     fp = fopen("meios.txt", "r");
     if (fp != NULL)
     {
         while (!feof(fp))
         {
-            fscanf(fp, "%d;%[^;];%f;%f;%f;%s;%d\n", &codigo, tipo, &bateria, &autonomia, &custo, geoCodigo, &disponivel);
-            aux = inserirMeio(aux, codigo, tipo, bateria, autonomia, custo, geoCodigo, disponivel);
+            fscanf(fp, "%d;%[^;];%f;%f;%f;%[^;];%d;\n",&codigo, tipo, &bateria, &autonomia, &custo, geoCodigo, &disponivel);
+            aux = inserirMeio(aux,codigo, tipo, bateria, autonomia, custo, geoCodigo, disponivel);
         }
         fclose(fp);
     }
     else
-    {
-        printf("Erro ao abrir o ficheiro");
-    }
+        printf("Nao foi possivel ler o ficheiro de veiculos"); 
+    
     return (aux);
 }
 
 // Inserção de um novo registo
-Meio *inserirMeio(Meio *inicio, int codigo, char tipo[], float bateria, float autonomia, float custo, char geoCodigo[], bool disponivel)
+Meio *inserirMeio(Meio *inicio, int codigo, char tipo[], float bateria, float autonomia, float custo, char geoCodigo[], int disponivel)
 {
     if (!existeMeio(inicio, codigo))
     {
@@ -80,7 +79,7 @@ Meio *inserirMeio(Meio *inicio, int codigo, char tipo[], float bateria, float au
             novo->autonomia = autonomia;
             novo->custo = custo;
             strcpy(novo->geoCodigo, geoCodigo);
-            novo->disponivel = true;
+            novo->disponivel = 1;
             novo->seguinte = inicio;
             return (novo);
         }
@@ -163,9 +162,9 @@ void listMeiosPorAutonomiaDecrescente(Meio **inicio)
     Meio *copia_inicio = NULL;
     Meio *atual = *inicio;
 
+
     while (atual != NULL)
     {
-        printf("cheguei aquiAtual");
         Meio *novoMeio = malloc(sizeof(Meio));
         *novoMeio = *atual;
         novoMeio->seguinte = NULL;
@@ -179,7 +178,6 @@ void listMeiosPorAutonomiaDecrescente(Meio **inicio)
             while (atual_copia->seguinte != NULL)
             {
                 atual_copia = atual_copia->seguinte;
-        printf("cheguei aqui");
             }
             atual_copia->seguinte = novoMeio;
         }
@@ -196,14 +194,12 @@ void listMeiosPorAutonomiaDecrescente(Meio **inicio)
         {
             copia_inicio->seguinte = meiosOrganizados;
             meiosOrganizados = copia_inicio;
-        printf("cheguei aqui2");
         }
         else
         {
             while (novo_atual->seguinte != NULL && novo_atual->seguinte->autonomia > copia_inicio->autonomia)
             {
                 novo_atual = novo_atual->seguinte;
-        printf("cheguei aqui3");
             }
             copia_inicio->seguinte = novo_atual->seguinte;
             novo_atual->seguinte = copia_inicio;
@@ -250,4 +246,18 @@ void alterarMeio(Meio **inicio, int codigo)
         aux = aux->seguinte;
     }
     printf("Meio não encontrado.\n");
+}
+
+
+void listarMeiosPorGeocodigo(Meio *inicio, char *geoCodigo)
+{
+    while (inicio != NULL)
+    {
+        if (strcmp(inicio->geoCodigo, geoCodigo) == 0)
+        {
+            printf("%d %s %f %f %f %s %d\n", inicio->codigo, inicio->tipo,
+                   inicio->bateria, inicio->autonomia, inicio->custo, inicio->geoCodigo, inicio->disponivel);
+        }
+        inicio = inicio->seguinte;
+    }
 }

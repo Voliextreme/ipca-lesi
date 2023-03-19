@@ -22,6 +22,25 @@ int saveUsers(User *inicio)
   else
     return (0);
 }
+int saveUsersBin(User *inicio)
+{
+  FILE *fp;
+  fp = fopen("./FicheirosBin/contas.bin", "wb");
+  if (fp != NULL)
+  {
+    User *aux = inicio;
+    while (aux != NULL)
+    {
+      fprintf(fp, "%d;%s;%s;%s;%s;%d;%.2f\n", aux->id, aux->nome,
+              aux->nif, aux->morada, aux->email, aux->role, aux->saldo);
+      aux = aux->seguinte;
+    }
+    fclose(fp);
+    return (1);
+  }
+  else
+    return (0);
+}
 
 User *readUsers()
 {
@@ -45,16 +64,6 @@ User *readUsers()
   return (aux);
 }
 
-//
-int contarContas(User* inicio) {
-    int contador = 0;
-    User* atual = inicio;
-    while (atual != NULL) {
-        contador++;
-        atual = atual->seguinte;
-    }
-    return contador;
-}
 
 // Inserção de um novo registo
 User *createUser(User *inicio, int id, char nome[], char nif[], char morada[], char email[],int role, float saldo)
@@ -169,6 +178,38 @@ void alterarUser(User **inicio, int id)
 
             printf("Digite o role: [1-Gestor, 2-User]]");
             scanf("%d", &aux->role);
+
+            printf("User atualizado com sucesso.\n");
+            return;
+        }
+        aux = aux->seguinte;
+    }
+    printf("User não encontrado.\n");
+}
+
+
+void alterarUserCliente(User **inicio, int id)
+{
+    User *aux = *inicio;
+    while (aux != NULL)
+    {
+        if (aux->id == id)
+        {
+            // Prompt user for new values
+            printf("Digite o nome: ");
+            scanf("%s", aux->nome);
+
+            printf("Digite o nif: ");
+            scanf("%s", aux->nif);
+
+            printf("Digite a morada: ");
+            scanf("%s", aux->morada);
+
+            printf("Digite o email: ");
+            scanf("%s", aux->email);
+
+            printf("Digite o saldo: ");
+            scanf("%f", &aux->saldo);
 
             printf("User atualizado com sucesso.\n");
             return;
