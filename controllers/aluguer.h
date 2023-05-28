@@ -15,14 +15,16 @@ typedef struct aluga
 
 Aluguer* alugarMeio(Aluguer* inicio ,Meio* inicioMeio, int codigoMeio, int idCliente, User* inicioUser);
 Aluguer* alugarMeioFicheiro(Aluguer* inicio ,int idAluguer, int codigoMeio, int idCliente);
-int devolverMeio(Meio* inicio, int codigoMeio, int idCliente);
+int devolverMeio(Meio** inicio, Aluguer* inicioAluguer, int idAluguer);
 Aluguer* lerAlugueres();
 
+int userTemAluguer(Aluguer* inicio, int idCliente);
 int existeAluguer(Aluguer* inicio, int idAluguer);
 
-int setMeioAlugado(Meio **inicio, int cod);
+void setMeioAlugado(Meio **inicio, int cod);
 
 int disponibilidadeMeio(Meio* inicio, int codigoMeio);
 void listarAlugueres(Aluguer* inicio);
+int listarAlugueresUser(Aluguer* inicio, int idCliente);
 int guardarAlugueres(Aluguer* inicio);
 

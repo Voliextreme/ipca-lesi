@@ -1,11 +1,12 @@
 #include <stdio.h>
-
 #include "./controllers/meio.h"
 #include "./controllers/conta.h"
 #include "./controllers/aluguer.h"
+#include "./controllers/grafo.h"
 #include "./controllers/meio.c"
 #include "./controllers/conta.c"
 #include "./controllers/aluguer.c"
+#include "./controllers/grafo.c"
 
 void menuPrincipal()
 {
@@ -36,8 +37,11 @@ void menuGestores()
 	printf("1 Inserir Gestor\n");
 	printf("2 Listar Users\n");
 	printf("3 Remover User\n");
-	printf("4 Ler Users\n");
-	printf("5 Alterar Users\n");
+	printf("4 Alterar Users\n");
+	printf("5 Criar Grafo\n");
+	printf("6 Listar Grafo\n");
+	printf("7 Listar meios perto de um cliente\n");
+	printf("8 Recolher meios com bateria inferior a 50\n");
 	printf("0 Sair\n");
 	printf("Opcao:\n");
 }
@@ -47,7 +51,8 @@ void menuClientes()
 	printf("\n --- Menu Cliente --- \n");
 	printf("1 Alugar Meio\n");
 	printf("2 Devolver Meio\n");
-	printf("3 Alterar Informacoes\n");
+	printf("3 Alterar Informacoes do Cliente\n");
+	printf("4 Listar Alugueres\n");
 
 	printf("0 Sair\n");
 	printf("Opcao:\n");
@@ -62,20 +67,59 @@ void menuLogin()
 	printf("Opcao:\n");
 }
 
+void criarGrafo(Grafo *grafo)
+{
+
+	if (grafo != NULL)
+	{
+		printf("Grafo ja existe\n");
+		return;
+	}
+	else
+	{
+
+		// Inserir os vertices no grafo
+		criarVertice(&grafo, "1.1.1");
+		criarVertice(&grafo, "3.3.3");
+		criarVertice(&grafo, "4.4.4");
+		criarVertice(&grafo, "2.2.2");
+
+		// Inserir as arestas no grafo
+		criarAresta(&grafo, "1.1.1", "3.3.3", 50);
+		criarAresta(&grafo, "2.2.2", "1.1.1", 30);
+		criarAresta(&grafo, "2.2.2", "4.4.4", 20);
+		criarAresta(&grafo, "4.4.4", "1.1.1", 40);
+
+		// Inserir os meios no grafo
+		inserirMeioNoGrafo(&grafo, "2.2.2", 1);
+		inserirMeioNoGrafo(&grafo, "1.1.1", 2);
+		inserirMeioNoGrafo(&grafo, "4.4.4", 3);
+		inserirMeioNoGrafo(&grafo, "2.2.2", 4);
+		inserirMeioNoGrafo(&grafo, "3.3.3", 5);
+
+		listarGrafo(grafo);
+		guardarGrafo(grafo);
+	}
+}
+
 int main()
 {
 	Meio *meios = NULL;		   // Lista ligada vazia
 	User *users = NULL;		   // Lista ligada vazia
 	Aluguer *alugueres = NULL; // Lista ligada vazia
 	User *userAtual = NULL;
+	Grafo *grafo = NULL;
 
-	int op = 0, opP = 0, opG = 0, opC = 0, opM = 0, id, login = 0, role, codigo;
-	float bateria, autonomia, saldo, custo;
+	int op = 0, opP = 0, opG = 0, opC = 0, opM = 0, id, login = 0, role = 0, codigo = 0;
+	float bateria, autonomia, saldo, custo, proximidade;
 	char tipo[50], nome[50], morada[100], nif[10], email[50], geoCodigo[50];
-	bool disponivel;
+	int disponivel;
 
+	// Menu Principal
 	do
 	{
+		grafo = lerGrafo();
+		meios = lerMeios();
 		menuLogin();
 		scanf("%d", &login);
 		switch (login)
@@ -125,7 +169,9 @@ int main()
 								printf("Saldo:\n");
 								scanf("%f", &saldo);
 								role = 1;
-								users = createUser(users, id, nome, nif, morada, email, role, saldo);
+								printf("GeoCodigo(ex: braga.ponte.rio):\n");
+								scanf("%[^\n]s", geoCodigo);
+								users = createUser(users, id, nome, nif, morada, email, role, saldo, geoCodigo);
 								saveUsers(users);
 								saveUsersBin(users);
 								break;
@@ -140,15 +186,30 @@ int main()
 								saveUsersBin(users);
 								break;
 							case 4:
-								users = readUsers();
-								break;
-							case 5:
 								listUsers(users);
 								printf("Id do user a alterar?\n");
 								scanf("%d", &id);
 								alterarUser(&users, id);
 								saveUsers(users);
 								saveUsersBin(users);
+								break;
+							case 5:
+								criarGrafo(grafo);
+							case 6:
+								listarGrafo(grafo);
+								break;
+							case 7:
+								printf("Em que proximidade:\n");
+								scanf("%f", &proximidade);
+								scanf("%*c");
+								printf("Qual o meio que pretende encontrar(ex: trotinete):\n");
+								scanf("%[^\n]s", tipo);
+								printMeiosDentroRaio(grafo, meios, "2.2.2", proximidade, tipo);
+								break;
+							case 8:
+								meios = percursoCamiao(grafo, meios, 50);
+								guardarMeios(meios);
+								break;
 							}
 						} while (opG != 0);
 						break;
@@ -173,7 +234,7 @@ int main()
 								printf("Custo:\n");
 								scanf("%f", &custo);
 								scanf("%*c");
-								printf("GeoCodigo:\n");
+								printf("GeoCodigo(ex: braga.ponte.rio):\n");
 								scanf("%[^\n]s", geoCodigo);
 								getchar();
 								disponivel = true;
@@ -225,37 +286,41 @@ int main()
 			if (userAtual->role == 2)
 			{
 				// Menu Cliente
-				meios = lerMeios();
 				do
 				{
+					meios = lerMeios();
 					alugueres = lerAlugueres();
+					int idAlugado = 0;
 					menuClientes();
 					scanf("%d", &opC);
 					switch (opC)
 					{
 					case 1:
-						listarMeios(meios);
+						listarMeiosDisponiveis(meios);
 						printf("Codigo do meio de mobilidade a alugar?\n");
 						scanf("%d", &codigo);
 						alugueres = alugarMeio(alugueres, meios, codigo, userAtual->id, users);
 						listarAlugueres(alugueres);
 						guardarAlugueres(alugueres);
+						guardarMeios(meios);
 						break;
 					case 2:
-						/*listarAlugueres(alugueres);
-						printf("Codigo do meio de mobilidade a devolver?\n");
-						scanf("%d", &codigo);
-						devolverMeio(meios, codigo, userAtual->id);
-						guardarAlugueres(alugueres);*/
-						printf("Em desenvolvimento...");
+						idAlugado = listarAlugueresUser(alugueres, userAtual->id);
+						devolverMeio(&meios, alugueres, idAlugado);
+						removerAluguer(alugueres, idAlugado);
+						guardarAlugueres(alugueres);
+						guardarMeios(meios);
 						break;
 					case 3:
-						users=readUsers();
+						users = readUsers();
 						alterarUserCliente(&users, userAtual->id);
 						saveUsers(users);
 						saveUsersBin(users);
 						break;
+					case 4:
+						listarAlugueres(alugueres);
 					}
+
 				} while (opC != 0);
 			}
 			break;
@@ -280,7 +345,9 @@ int main()
 			printf("Saldo:\n");
 			scanf("%f", &saldo);
 			role = 2;
-			users = createUser(users, id, nome, nif, morada, email, role, saldo);
+			printf("GeoCodigo(ex: braga.ponte.rio):\n");
+			scanf("%[^\n]s", geoCodigo);
+			users = createUser(users, id, nome, nif, morada, email, role, saldo, geoCodigo);
 			listUsers(users);
 			saveUsers(users);
 			break;

@@ -12,8 +12,8 @@ int saveUsers(User *inicio)
     User *aux = inicio;
     while (aux != NULL)
     {
-      fprintf(fp, "%d;%s;%s;%s;%s;%d;%.2f\n", aux->id, aux->nome,
-              aux->nif, aux->morada, aux->email, aux->role, aux->saldo);
+      fprintf(fp, "%d;%s;%s;%s;%s;%d;%.2f;%s\n", aux->id, aux->nome,
+              aux->nif, aux->morada, aux->email, aux->role, aux->saldo, aux->geoCodigo);
       aux = aux->seguinte;
     }
     fclose(fp);
@@ -31,8 +31,8 @@ int saveUsersBin(User *inicio)
     User *aux = inicio;
     while (aux != NULL)
     {
-      fprintf(fp, "%d;%s;%s;%s;%s;%d;%.2f\n", aux->id, aux->nome,
-              aux->nif, aux->morada, aux->email, aux->role, aux->saldo);
+      fprintf(fp, "%d;%s;%s;%s;%s;%d;%.2f;%s\n", aux->id, aux->nome,
+              aux->nif, aux->morada, aux->email, aux->role, aux->saldo, aux->geoCodigo);
       aux = aux->seguinte;
     }
     fclose(fp);
@@ -47,15 +47,15 @@ User *readUsers()
   FILE *fp;
   int id, role;
   float saldo;
-  char nome[50], nif[10], morada[100], email[50];
+  char nome[50], nif[10], morada[100], email[50], geoCodigo[100];
   User *aux = NULL;
   fp = fopen("contas.txt", "r");
   if (fp != NULL)
   {
     while (!feof(fp))
     {
-      fscanf(fp, "%d;%[^;];%[^;];%[^;];%[^;];%d;%f;\n", &id, nome, nif, morada, email, &role, &saldo);
-      aux = createUser(aux, id, nome, nif, morada, email, role, saldo);
+      fscanf(fp, "%d;%[^;];%[^;];%[^;];%[^;];%d;%f;%[^;];\n", &id, nome, nif, morada, email, &role, &saldo);
+      aux = createUser(aux, id, nome, nif, morada, email, role, saldo, geoCodigo);
     }
     fclose(fp);
   }else{
@@ -66,7 +66,7 @@ User *readUsers()
 
 
 // Inserção de um novo registo
-User *createUser(User *inicio, int id, char nome[], char nif[], char morada[], char email[],int role, float saldo)
+User *createUser(User *inicio, int id, char nome[], char nif[], char morada[], char email[],int role, float saldo, char geoCodigo[])
 {
   if (!findUser(inicio, id))
   {
@@ -80,6 +80,7 @@ User *createUser(User *inicio, int id, char nome[], char nif[], char morada[], c
       strcpy(novo->email, email);
       novo->role = role;
       novo->saldo = saldo;
+      strcpy(novo->geoCodigo, geoCodigo);
       novo->seguinte = inicio;
       return (novo);
     }
@@ -93,8 +94,8 @@ void listUsers(User *inicio)
 {
   while (inicio != NULL)
   {
-    printf("%d %s %s %s %s %d %.2f\n", inicio->id, inicio->nome,
-           inicio->nif, inicio->morada, inicio->email, inicio->role, inicio->saldo);
+    printf("%d %s %s %s %s %d %.2f %s\n", inicio->id, inicio->nome,
+           inicio->nif, inicio->morada, inicio->email, inicio->role, inicio->saldo, inicio->geoCodigo);
     inicio = inicio->seguinte;
   }
 }

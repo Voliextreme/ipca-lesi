@@ -48,20 +48,20 @@ Meio *lerMeios()
     char tipo[50], geoCodigo[50];
     int disponivel;
     Meio *aux = NULL;
-    
+
     fp = fopen("meios.txt", "r");
     if (fp != NULL)
     {
         while (!feof(fp))
         {
-            fscanf(fp, "%d;%[^;];%f;%f;%f;%[^;];%d;\n",&codigo, tipo, &bateria, &autonomia, &custo, geoCodigo, &disponivel);
-            aux = inserirMeio(aux,codigo, tipo, bateria, autonomia, custo, geoCodigo, disponivel);
+            fscanf(fp, "%d;%[^;];%f;%f;%f;%[^;];%d;\n", &codigo, tipo, &bateria, &autonomia, &custo, geoCodigo, &disponivel);
+            aux = inserirMeio(aux, codigo, tipo, bateria, autonomia, custo, geoCodigo, disponivel);
         }
         fclose(fp);
     }
     else
-        printf("Nao foi possivel ler o ficheiro de veiculos"); 
-    
+        printf("Nao foi possivel ler o ficheiro de veiculos");
+
     return (aux);
 }
 
@@ -79,7 +79,7 @@ Meio *inserirMeio(Meio *inicio, int codigo, char tipo[], float bateria, float au
             novo->autonomia = autonomia;
             novo->custo = custo;
             strcpy(novo->geoCodigo, geoCodigo);
-            novo->disponivel = 1;
+            novo->disponivel = disponivel;
             novo->seguinte = inicio;
             return (novo);
         }
@@ -97,6 +97,18 @@ void listarMeios(Meio *inicio)
         inicio = inicio->seguinte;
     }
 }
+//Listar apenas os meios disponeiveis para aluguer
+void listarMeiosDisponiveis(Meio *inicio)
+{
+    while (inicio != NULL)
+    {
+        if(inicio->disponivel == 1){
+            printf("%d %s %f %f %f %s %d\n", inicio->codigo, inicio->tipo,
+                inicio->bateria, inicio->autonomia, inicio->custo, inicio->geoCodigo, inicio->disponivel);
+        }
+        inicio = inicio->seguinte;
+    }
+}
 
 
 void listarMeiosOrganizados(Meio **inicio)
@@ -110,7 +122,6 @@ void listarMeiosOrganizados(Meio **inicio)
         aux = aux->seguinte;
     }
 }
-
 
 // Determinar existência do 'codigo' na lista ligada 'inicio'
 // devolve 1 se existir ou 0 caso contrário
@@ -156,12 +167,10 @@ Meio *removerMeio(Meio *inicio, int cod)
     }
 }
 
-
 void listMeiosPorAutonomiaDecrescente(Meio **inicio)
 {
     Meio *copia_inicio = NULL;
     Meio *atual = *inicio;
-
 
     while (atual != NULL)
     {
@@ -247,7 +256,6 @@ void alterarMeio(Meio **inicio, int codigo)
     }
     printf("Meio não encontrado.\n");
 }
-
 
 void listarMeiosPorGeocodigo(Meio *inicio, char *geoCodigo)
 {

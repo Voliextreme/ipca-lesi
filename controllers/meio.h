@@ -24,6 +24,7 @@ void alterarMeio(Meio** inicio, int codigo);
 int guardarMeiosBin(Meio* inicio);
 
 void listarMeios(Meio* inicio); // listar na consola o conteúdo da lista ligada
+void listarMeiosDisponiveis(Meio* inicio); // listar na consola o conteúdo da lista ligada
 void listarMeiosOrganizados(Meio** inicio);
 void listMeiosPorAutonomiaDecrescente(Meio** inicio);
 void listarMeiosPorGeocodigo(Meio *inicio, char *geoCodigo);
